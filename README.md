@@ -1,5 +1,7 @@
 # wechaty
 本项目使用[wechaty-puppet-padplus](https://github.com/wechaty/wechaty-puppet-padplus)。请先查看[官方文档](https://github.com/wechaty/wechaty-puppet-padplus)。
+[![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-green.svg)](https://github.com/chatie/wechaty)
+[![Wechaty开源激励计划](https://img.shields.io/badge/Wechaty-开源激励计划-green.svg)](https://github.com/juzibot/Welcome/wiki/Everything-about-Wechaty)
 
 ## Token 申请
 
