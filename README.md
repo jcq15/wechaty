@@ -5,7 +5,7 @@
 
 ## Token 申请
 
-Wechaty 需要 Token， 付费的 200 一个月，显然是买不起的，但我们可以参与[开源激励计划](https://github.com/juzibot/Welcome/wiki/Everything-about-Wechaty)获得一年免费 Token。
+我们可以参与[开源激励计划](https://github.com/juzibot/Welcome/wiki/Everything-about-Wechaty)获得一年免费 Token，也可以直接购买，200元/月。
 
 ## 快速开始
 
@@ -32,4 +32,3 @@ ts-node bot.ts
 - `bot.ts` 与微信直接对接，微信收到的消息会在这里初步处理并 post 给后端
 - `backend.py` 根据消息来源所在的群聊分散到不同的模块处理
 - `baoshi.py` 处理报时群
-- `zijing.py` 该部分涉及隐私，未上传，`backend.py` 中的相关代码可以自行删除
