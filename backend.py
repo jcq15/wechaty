@@ -53,7 +53,7 @@ def message():
 # 返回当前报时内容
 @app.route('/clock', methods=['GET'])
 def clock():
-    return baoshi.model.replace('h', str(datetime.datetime.now().hour)).replace('m', str(datetime.datetime.now().minute))
+    return baoshi.gettext()
 
 
 
