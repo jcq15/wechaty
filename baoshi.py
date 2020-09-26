@@ -56,6 +56,7 @@ def handle(data):
     if data['mentionSelf']:
         global model
         text = data['text'].replace('@青蛙 ', '')
+        text = text.replace('@青蛙\u2005', '')
 
         # 测试开始
         #return json.dumps({'type': 'text', 'content': eval(text)})
