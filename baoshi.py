@@ -4,6 +4,7 @@ import logging
 import random
 import math
 import itertools
+import numpy as np
 
 logging.basicConfig(level=logging.DEBUG, filename='/home/wechat/wechatbot/output.log')
 logger = logging.getLogger(__name__)
@@ -78,9 +79,16 @@ def handle(data):
         
         elif text == '24点':
             num_list = []    
-            for i in range(4):
-                num_list.append(str(random.randint(1,9)))
-                res = ' '.join(num_list)
+#             for i in range(4):
+#                 num_list.append(str(random.randint(1,9)))
+#                 res = ' '.join(num_list)
+            array_data = np.loadtxt('24p_1_9.txt')
+            len(list(array_data))
+            id=np.random.randint(low=0, high=len(list(array_data)))
+            choice = list(array_data)[id]
+            choice = [int(c) for c in choice]
+            num_str_list = [str(c) for c in choice]
+            res = ' '.join(num_str_list)
             return json.dumps({'type':'text','content':'4 numbers:'+res})
 
         elif len(text) >= 4  and text[:2] == '乘法':
