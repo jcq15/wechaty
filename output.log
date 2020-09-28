@@ -3657,3 +3657,29 @@ INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 12:00:41] "[37mPOST /message HTTP/1.1
 INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 12:01:01] "[37mPOST /message HTTP/1.1[0m" 200 -
 INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 13:00:00] "[37mGET /clock HTTP/1.1[0m" 200 -
 INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 13:00:11] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:00:00] "[37mGET /clock HTTP/1.1[0m" 200 -
+INFO:werkzeug: * Detected change in '/home/wechat/wechatbot/baoshi.py', reloading
+INFO:werkzeug: * Restarting with stat
+INFO:werkzeug: * Restarting with stat
+INFO:werkzeug: * Restarting with stat
+INFO:werkzeug: * Restarting with stat
+INFO:werkzeug: * Restarting with stat
+INFO:werkzeug: * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 133-393-514
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:23:11] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:23:21] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:23:33] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug: * Detected change in '/home/wechat/wechatbot/baoshi.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 133-393-514
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:24:01] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:24:16] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:24:20] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:24:33] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:24:39] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:24:49] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:24:57] "[37mPOST /message HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Sep/2020 14:25:24] "[37mPOST /message HTTP/1.1[0m" 200 -
