@@ -10,6 +10,8 @@ from pypinyin import pinyin, Style
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import safe_calculation as sc
+
 
 '''这样记录日志
 logger.info('This is a log info')
@@ -84,18 +86,21 @@ class cyjl_server:
             reply += '%s:%s分\n' % (backitem[1], backitem[0])
         return reply
 
+class ABB:
+    def __init__(self):
+        self.num = random.randint()
+
 class Baoshi:
     def __init__(self):
         
         self.model = r'frog2.0启动！淦！已经\h点\m分了！你今天学习了吗？'
-        self.function = '我是青蛙！我有这些功能，都要@我噢！\n'\
-                           '1. 发送“功能”查看功能；\n'\
-                           '2. 发送“报时”报时；\n'\
-                           '3. 发送“24点”，给你四个数算24点。一定能算出来，算不出来说明你是傻逼；\n'\
-                           '4. 发送“48点”，给你四个数算48点。一定能算出来，算不出来说明你是大傻逼；\n'\
-                           '5. 发送“计算 表达式”进行计算，例如“计算 114000+514”;\n'\
-                           '6. 发送“天气 城市”进行计算，例如“天气 北京”;\n'\
-                           '7. 发送“今日运势 星座”进行算命，例如“今日运势 狮子座”'
+        self.function = '@我并发送括号里的内容就行噢！\n'\
+                           '1. 【功能】\n'\
+                           '2. 【报时】\n'\
+                           '3. 【24点】或【48点】\n'\
+                           '4. 【运行 code】运行python代码，例如【运行 [i*i for i in range(10)]】\n'\
+                           '5. 【天气 城市】查询天气，例如【天气 北京】\n'\
+                           '6. 【今日运势 星座】算命，例如【今日运势 狮子座】'
         self.status = 0           # 0: 无状态, 'cyjl': 在玩成语接龙
 
     # 获取报时内容
@@ -190,9 +195,9 @@ class Baoshi:
         return operand_stack[0]
      
     def handle(self, data):
-        # AB学习时间！
-        if data['contact'].name == 'AB':
-            return ('要期中考试了还水群呢？？', 'mention')
+        # # AB学习时间！
+        # if data['contact'].name == 'Kris_AB':
+        #     return '小乖乖快去学习啦！别水群了！！！'
 
         if data['mentionSelf']:
             text = data['text'].replace('@青蛙 ', '').replace('@青蛙\u2005', '')
@@ -231,9 +236,13 @@ class Baoshi:
             elif text == '报时':
                 return self.gettext()
 
-            elif len(text) >= 4 and text[:2] == '计算':
-                _, expression = text.split(' ')
-                return str(self.__infix_evaluator(text[3:]))
+            elif len(text) >= 3 and text[:2] == '计算' or text[:2] == '运行':
+                expression = text[2:]
+                #_, expression = text.split(' ')
+                res = sc.safe_calculate(expression.lstrip(), 2)
+                print(res)
+                return res
+                #return str(self.__infix_evaluator(text[3:]))
 
             elif text == 'ping':
                 return str(data['age'])
