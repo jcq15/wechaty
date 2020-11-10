@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 
 
 class WeatherForecaster:
-    def __init__(self):
-        self.abs_path = '/home/wechat/wechatbot/'
+    def __init__(self, abs_path='/home/wechat/wechatbot/'):
+        self.abs_path = abs_path
         self.source_file = self.abs_path + 'resources/weather_city_id.csv'
         self.source_url = 'http://www.weather.com.cn/weather/'
 

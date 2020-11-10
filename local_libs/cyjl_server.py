@@ -4,8 +4,8 @@ import random
 
 # 成语接龙的管理者
 class CYJLServer:
-    def __init__(self):
-        self.abs_path = '/home/wechat/wechatbot/'
+    def __init__(self, abs_path='/home/wechat/wechatbot/'):
+        self.abs_path = abs_path
         self.data = {}  # 成语们，简单粗暴
         self.now = ''       # 当前成语
         self.index = 0      # 第几个词
@@ -89,7 +89,7 @@ class CYJLServer:
         # 成绩排序
         items = self.scores.items()
         backitems = [v[1] for v in items]      # 分数，昵称
-        backitems.sort()
+        backitems.sort(reverse=True)
 
         reply = '本次共接龙了%s轮，大家的成绩为：\n' % (self.index-1)
         for backitem in backitems:

@@ -3,7 +3,7 @@ import datetime
 
 class TimeReporter:
     def __init__(self):
-        self.template = r'frog2.5启动！淦！已经\h点\m分了！你今天学习了吗？'
+        self.template = r'frog3.14启动！淦！已经\h点\m分了！你今天学习了吗？'
 
     def set_template(self, txt):
         self.template = txt
