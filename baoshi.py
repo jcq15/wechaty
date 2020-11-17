@@ -6,11 +6,12 @@ from local_libs.weather_forecaster import WeatherForecaster
 from local_libs import calculator
 from local_libs import PyOJAgent
 from local_libs.latex_delegate import LaTeXDelegate
-from local_libs.sudoku_manager import SudokuManager
+from local_libs.sudoku_delegate import SudokuDelegate
 
 import numpy as np
 import random
 import re
+import os
 from pypinyin import pinyin, Style
 
 import uuid
@@ -37,7 +38,7 @@ class Baoshi:
             bg_color='#' + self.gif_bg_color_str)
         self.latex_resolution = 600
         self.latex_delegate = LaTeXDelegate()
-        self.sudoku_manager = SudokuManager()
+        self.sudoku_manager = SudokuDelegate()
         self.function = '@我并发送【括号】里的内容就行噢！\n' \
                         '0. 【功能】\n' \
                         '1. 【报时】\n' \
@@ -45,24 +46,25 @@ class Baoshi:
                         '3. 【运行 code】运行python代码，例如【运行 [i*i for i in range(10)]】\n' \
                         '4. 【天气 城市】查询天气，例如【天气 北京】\n' \
                         '5. 【今日运势 星座】算命，例如【今日运势 狮子座】\n' \
-                        '6. 【成语接龙】，例如【成语接龙】\n' \
-                        '7. 【OJ 题号】 做OJ题目，例如 【OJ 2】\n' \
-                        '8. 【提交OJ 代码】 提交OJ代码，例如【提交OJ def main_function(a, b): return a + b】\n' \
-                        '9. 【latex 表达式】 由LaTeX表达式生成图片，例如【latex e^{i\\pi} + 1 = 0】\n' \
-                        'A. 【latex颜色 6位色号(RRGGBB)】 修改LaTeX颜色，例如【颜色 114514】\n' \
-                        'B. 【分辨率 数值】 修改LaTeX分辨率，例如【分辨率 600】\n' \
-                        'C. 【gif 文本】 由文本生成gif图片，例如【gif 苟利国家生死以】\n'\
-                        'D. 【gif前景色 6位色号(RRGGBB)】 修改gif前景色，例如【gif前景色 660874】\n' \
-                        'E. 【数独】 显示当前数独题目，例如【数独】\n'\
-                        'F. 【数独 重新出题】 出一道新数独题，例如【数独 重新出题】\n'\
-                        '10. 【数独 rcn】 在当前数独第r行第c列填入数字n，行列范围均为1-9，例如【数独 123】\n'\
-                        '11. 【数独 答案】 显示当前数独答案，例如【数独 答案】\n'
+                        '6-1. 【成语接龙】，例如【成语接龙】\n' \
+                        '6-2. （暂未上线）【田语接龙】，可以为所欲为的成语接龙\n' \
+                        '7-1. 【OJ 题号】 做OJ题目，例如 【OJ 2】\n' \
+                        '7-2. 【提交OJ 代码】 提交OJ代码，例如【提交OJ def main_function(a, b): return a + b】\n' \
+                        '8-1. 【latex 表达式】 由LaTeX表达式生成图片，例如【latex e^{i\\pi} + 1 = 0】\n' \
+                        '8-2. 【latex颜色 6位色号(RRGGBB)】 修改LaTeX颜色，例如【颜色 114514】\n' \
+                        '8-3. 【分辨率 数值】 修改LaTeX分辨率，例如【分辨率 600】\n' \
+                        '9-1. 【gif 文本】 由文本生成gif图片，例如【gif 苟利国家生死以】\n'\
+                        '9-2. 【gif前景色 6位色号(RRGGBB)】 修改gif前景色，例如【gif前景色 660874】\n' \
+                        'A-1. 【数独】 显示当前数独题目，例如【数独】\n'\
+                        'A-2. 【数独 重新出题】 出一道新数独题，例如【数独 重新出题】\n'\
+                        'A-3. 【数独 rcn】 在当前数独第r行第c列填入数字n，行列范围均为1-9，例如【数独 123】\n'\
+                        'A-4. 【数独 答案】 显示当前数独答案，例如【数独 答案】\n'
                         # 'E. 【gif背景色 6位色号(RRGGBB)】 修改gif背景色，例如【gif背景色 123456】\n'
 
     def cyjl_helper(self, data, text):
         userid = data['contact'].id
         usernick = data['contact'].name
-
+        print(pinyin(text, style=Style.NORMAL))
         if text == '结束成语接龙':  # 结束
             reply = self.cyjl.end_game()
             self.status = 0
@@ -73,7 +75,7 @@ class Baoshi:
             return '你是不是沙雕，我们已经在玩成语接龙了！当前是第%s个成语：\n【%s】' % (self.cyjl.index, self.cyjl.now)
         elif text == '要看答案':
             return self.cyjl.report_solutions()
-        elif len(text) > 0 and self.cyjl.data[self.cyjl.now][-1] in pinyin(text, style=Style.NORMAL)[0]:  # 第一个字对上了
+        elif len(text) > 0 and self.cyjl.word_dict[self.cyjl.now][-1] in pinyin(text, style=Style.NORMAL, v_to_u=True)[0]:  # 第一个字对上了
             reply = self.cyjl.judge(text, userid, usernick)
 
             if not self.cyjl.next_list:  # 后面没法接
@@ -85,6 +87,9 @@ class Baoshi:
             return reply
         else:
             return '我们玩成语接龙呢，你少来插嘴没用的！'
+
+    # 田语接龙
+    #def tyjl_helper
 
     @staticmethod
     def parse_text(text):
@@ -136,8 +141,8 @@ class Baoshi:
 
             elif other_arg and (main_arg == '计算' or main_arg == '运行'):
                 expression = text[2:]
+
                 res = calculator.safe_calculate(expression.lstrip(), 2)
-                print(res)
                 return res
 
             elif text == 'ping':
@@ -289,7 +294,7 @@ class Baoshi:
                     return '别胡闹，没这色儿！'
 
             elif text == '测试图片':
-                return self.abs_path + 'resources/images/testgif.gif', 'image'
+                return [self.abs_path + 'resources/images/testgif.gif', self.abs_path + 'resources/images/testimg2.png'], 'images'
 
             elif len(text) >= 5 and text[:3] == 'gif':
                 content = text[4:]
@@ -307,6 +312,10 @@ class Baoshi:
                     return None
         else:
             if random.random() < self.prob_threshold:
-                return '本蛙不说话就静静看你们聊天！'
+                # pathdir = os.listdir(self.abs_path + 'resources/images/banner/')
+                # pic = random.sample(pathdir, 1)
+                # print(pic)
+                # return self.abs_path + 'resources/images/banner/' + pic[0], 'image'
+                return '本蛙就静静看着你们，一句话都不想说！'
             else:
                 return None

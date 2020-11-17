@@ -8,11 +8,10 @@ class WeatherForecaster:
         self.abs_path = abs_path
         self.source_file = self.abs_path + 'resources/weather_city_id.csv'
         self.source_url = 'http://www.weather.com.cn/weather/'
+        self.city_id = pd.read_csv(self.source_file, encoding='gbk')
 
     def get_weather(self, city):
-        city_id = pd.read_csv(self.source_file, encoding='gbk')
-
-        li = list(city_id[city_id['城市'] == city]['citycode'])
+        li = list(self.city_id[self.city_id['城市'] == city]['citycode'])
 
         if not li:
             return '没这地儿！'

@@ -20,6 +20,12 @@ class GIFGenerator:
         self.bg_color = bg_color
         # self.font_file = 'resources/fonts/EmojiOneColor-SVGinOT.ttf'
 
+    def set_fg(self, color_str):
+        self.fg_color = '#' + color_str
+
+    def set_bg(self, color_str):
+        self.bg_color = '#' + color_str
+
     def parse(self, txt):   # return parsed text with \n added
         output = ""
         current_row = 1

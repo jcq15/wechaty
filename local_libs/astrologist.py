@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime as dt
 
 
 class Astrologist:
@@ -19,6 +20,23 @@ class Astrologist:
         '双鱼座': 'pisces'}
 
         self.source_url = 'https://www.xzw.com/fortune/'
+        self.last_refresh = None
+
+        self.daily_refresh()
+
+    def report(self, xz):
+        if self.last_refresh and self.last_refresh.date == dt.now().date:
+            pass
+        else:
+            self.daily_refresh()
+
+        return self.cache.get(xz, self.get_data(xz))
+
+    def daily_refresh(self):
+        self.last_refresh = dt.now()
+        self.cache = {key: self.get_data(key)
+                      for key in self.xz_cn_to_eng}
+
 
     def get_data(self, xz):
         if xz not in self.xz_cn_to_eng:
@@ -41,9 +59,9 @@ class Astrologist:
                 res = res + str_tmp + str_txt
 
             for i in range(4, 10):
-                print(infor1[i])
-                print(infor1[i].find('label').text)
-                print(infor1[i].text.split('：'))
+                # print(infor1[i])
+                # print(infor1[i].find('label').text)
+                # print(infor1[i].text.split('：'))
                 str_tmp = '【' + infor1[i].find('label').text[:-1] + '】' + infor1[i].text.split('：')[-1] + '\n'
                 if i == 4:
                     str_tmp = str_tmp + infor2[i].find('span').text + '\n'

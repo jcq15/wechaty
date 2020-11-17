@@ -1,3 +1,6 @@
+import traceback
+from message_distributor import MessageDistributor
+from features import ResponseMessage
 from flask import Flask
 from flask import request
 import json
@@ -36,7 +39,10 @@ groups = {
     '4309278385@chatroom': baoshi.Baoshi(),      # python交流群
     '14700918607@chatroom': baoshi.Baoshi(),     # 春季直播群
     '714388336@chatroom': baoshi.Baoshi(),       # 雷锋
+    '21717572132@chatroom': baoshi.Baoshi(),     # JHU
 }
+
+message_distributor = MessageDistributor()
 
 # 待完善，房间类
 class Room():
@@ -83,18 +89,18 @@ def handle(good_data):
             response = ''
         #print(response)
         if not response:
-            return json.dumps({'type': 'null'})
+            return json.dumps([{'type': 'null'}])
         # 回复
         if isinstance(response, str):
-            return json.dumps({'type': 'text', 'content': response})
+            return json.dumps([{'type': 'text', 'content': response}])
         elif isinstance(response, tuple):
-            return json.dumps({'type': response[1], 'content': response[0]})
+            return json.dumps([{'type': response[1], 'content': response[0]}])
         else:
-            return json.dumps({'type': 'null'})
+            return json.dumps([{'type': 'null'}])
 
     else:
         #resp_list[0] = json.dumps({'type': 'null'})
-        return json.dumps({'type': 'null'})
+        return json.dumps([{'type': 'null'}])
 
 
 @app.route('/message', methods=['GET', 'POST'])
@@ -114,15 +120,18 @@ def message():
             }
             print(good_data)
             print(good_data['contact'].id)#, good_data['contact'].name)
+            resp = message_distributor.handle_input_data(good_data)
+            return ResponseMessage.list_to_json(resp)
             resp = handle(good_data)
-            return resp if resp else json.dumps({'type': 'null'})
-        return json.dumps({'type': 'null'})
+            return resp if resp else json.dumps([{'type': 'null'}])
+        return json.dumps([{'type': 'null'}])
     except Exception as ee:
         #log.exception(ee)
         #log_contents = log_capture_string.getvalue()
         #log_capture_string.close()
         print(ee)
-        return json.dumps({'type':'text', 'content':'对不起，我出错了！呜呜呜！联系管理员解决吧！'})
+        traceback.print_exc()
+        return json.dumps([{'type':'text', 'content':'对不起，我出错了！呜呜呜！联系管理员解决吧！'}])
 
 
 # 返回当前报时内容

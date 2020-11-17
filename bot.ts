@@ -1,5 +1,5 @@
 // bot.ts
-import { Contact, Message, Wechaty } from 'wechaty'
+import { Contact, Message, Wechaty, RoomInvitation } from 'wechaty'
 import { ScanStatus } from 'wechaty-puppet'
 import { PuppetPadplus } from 'wechaty-puppet-padplus'
 import QrcodeTerminal from 'qrcode-terminal'
@@ -18,6 +18,8 @@ const bot = new Wechaty({
   name: 'shadiao_bot',
   puppet, // generate xxxx.memory-card.json and save login data for the next login
 })
+
+
 
 /*
 //报时器，已经废弃不用，但这里定时任务的写法可能以后有用
@@ -73,6 +75,17 @@ bot.on('login', async (user: Contact) => {
     //启动报时器
     //hourReport();
   })
+
+bot.on('room-invite', async roomInvitation => {
+  try {
+    console.log(`received room-invite event.`)
+    await roomInvitation.accept()
+  } catch (e) {
+    console.error(e)
+  }
+})
+
+
 bot.on('message', async (msg: Message) => {
     console.log(`msg : ${msg}`)
     var room = msg.room()
@@ -113,57 +126,86 @@ bot.on('message', async (msg: Message) => {
     }
     try{
     // 所有的东西都推到后端用python处理
-    request.post({url:'http://127.0.0.1:5000/message', formData: formData}, async function (error, response, body) {  
+    request.post({url:'http://127.0.0.1:5000/message', formData: formData}, async function (error, responses, body) {  
         if (error) {
             console.log('Error :', error)
             return
         }
-        var response = JSON.parse(body)
-        console.log(response)
+        var responses = JSON.parse(body)
+        console.log(responses)
         if(body.length > 0){
-          const type: string = response['type']
-          if(type=='image'){
-            const path: string = response['content']
 
-            const fs = require('fs');
-            const contents = fs.readFileSync(path, {encoding: 'base64'});
-            // Example call:
-            
-              const filebox_b64 = FileBox.fromBase64(contents, path)
-              if(room){
-                console.log('准备发啦！')
-                room.say(filebox_b64)
-              }else{
-                contact?.say(filebox_b64)
-              }
-            
+          for (let response of responses){
 
-          }
-          if(type=='images'){
-            const path: string[] = response['content']
-            console.log(path)
-            for(let p of path){
-              const filebox: FileBox = FileBox.fromFile(p)
-              if(room){
-                console.log('准备发啦！')
-                room.say(filebox)
-              }else{
-                contact?.say(filebox)
+            const type: string = response['type']
+            if(type=='image'){
+              const path: string = response['content']
+
+              const fs = require('fs');
+              const contents = fs.readFileSync(path, {encoding: 'base64'});
+              // Example call:
+              
+                const filebox_b64 = FileBox.fromBase64(contents, path)
+                if(room){
+                  console.log('准备发啦！！')
+                  await room.say(filebox_b64)
+                }else{
+                  await contact?.say(filebox_b64)
+                }
+            }else if(type == 'images'){
+              const path: string[] = response['content']
+              console.log(path)
+              for(let p of path){
+                const filebox: FileBox = FileBox.fromFile(p)
+                if(room){
+                  console.log('准备发啦！')
+                  await room.say(filebox)
+                }else{
+                  await contact?.say(filebox)
+                }
               }
-            }
-          }else if(type=='text'){
-            const text: string = response['content']
-            if(room){
-              room.say(text)
+            }else if(type=='text'){
+              const text: string = response['content']
+              const mentions: string[] = response['mentions']
+
+
+              if(room){
+                if (mentions && mentions.length > 0){
+                    const m_contact = await bot.Contact.find({id: mentions[0]})
+
+                    if (m_contact)
+                    {
+                      await room.say(text, m_contact)
+                    }
+                    else
+                    {
+                      await room.say(text)
+                    }
+                    
+                    /*
+                    var m_contact: Contact[] = new Array()
+
+                    for (let cid of mentions){
+                      var current = await bot.Contact.find({id:cid})
+                      m_contact.push(current?)
+                    }
+
+                    await room.say(text, m_contact)
+                    */
+                }
+                else{
+                    await room.say(text)
+                }
+              }else{
+                await contact?.say(text)
+              }
+            }else if(type=='mention'){
+              if(room){
+                await room.say(response['content'], contact)
+              }
             }else{
-              contact?.say(text)
+              //什么也不做呗
             }
-          }else if(type=='mention'){
-            if(room){
-              room.say(response['content'], contact)
-            }
-          }else{
-            //什么也不做呗
           }     
         }
     })
